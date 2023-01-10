@@ -8,10 +8,15 @@ import React, { useState } from "react";
  *
  */
 
-export const useStore = <Store,>(
+type StoreType<Store extends object> = {
+  data: Store;
+  set: (data: Partial<Store>) => void;
+};
+
+export const useStore = <Store extends object>(
   initialState: Store,
   persistanceKey?: string
-) => {
+): StoreType<Store> => {
   if (persistanceKey) {
     try {
       initialState =
@@ -44,8 +49,11 @@ export const useStore = <Store,>(
  *
  */
 
-export const createContextStore = <T,>(useStore: () => T) => {
-  const Context = React.createContext<T | null>(null);
+export const createContextStore = <T extends object>(
+  initial: T,
+  persistanceKey?: string
+) => {
+  const Context = React.createContext<StoreType<T> | null>(null);
 
   const useContextStore = () => React.useContext(Context)!;
 
@@ -53,7 +61,11 @@ export const createContextStore = <T,>(useStore: () => T) => {
     children,
   }: {
     children: React.ReactNode;
-  }) => <Context.Provider value={useStore()}>{children}</Context.Provider>;
+  }) => (
+    <Context.Provider value={useStore(initial, persistanceKey)}>
+      {children}
+    </Context.Provider>
+  );
 
   return { ContextStoreProvider, useContextStore };
 };

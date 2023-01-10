@@ -3,9 +3,10 @@ code toolkit
 
 ## React
 ### Stores
+[Context Store](/react/src/Examples/stores/Context/store/createContextStore.tsx)
+
 [Ref Context Store](/react/src/Examples/stores/RefContext/store/createRefContextStore.tsx)
 
-[Ref Context Store](/react/src/Examples/stores/Context/store/createContextStore.tsx)
 
 ### Hooks
 [Clicked outside](/react/src/hooks/useClickOutside.ts)
@@ -23,4 +24,4 @@ code toolkit
 [Object sorting](/typescript/src/sortObject.ts)
 
 ### Text formatting
-[Scentance Case](/typescript/src/textFormatting/scentenceCase.ts)
+[Sentence Case](/typescript/src/textFormatting/sentenceCase.ts)

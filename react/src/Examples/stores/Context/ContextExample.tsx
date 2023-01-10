@@ -1,6 +1,6 @@
 import React from "react";
 import { RenderCounter } from "../../../Components/Utils/RenderCounter/RenderCounter";
-import { createContextStore, useStore } from "./store/createContextStore";
+import { createContextStore } from "./store/createContextStore";
 import "./ContextExampleStyles.scss";
 
 interface ContextStoreState {
@@ -8,8 +8,9 @@ interface ContextStoreState {
   last: string;
 }
 
-const { ContextStoreProvider, useContextStore } = createContextStore(() =>
-  useStore<ContextStoreState>({ first: "", last: "" }, "context-store-example")
+const { ContextStoreProvider, useContextStore } = createContextStore(
+  { first: "", last: "" },
+  "context-store-example"
 );
 
 export const ContextExample: React.FC = (props) => {
