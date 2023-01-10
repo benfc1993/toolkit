@@ -13,6 +13,16 @@ export interface IContextStore<Store> {
   subscribe: (callback: () => void) => () => void;
 }
 
+/**
+ * Store using Ref
+ *
+ * This store will only cause re-renders to the subscribed components.
+ * The subscriber will also only be notified if the partial of the state denoted by the passed selector is updated.
+ *
+ * @param initialState: This is the blank stae and will also inform the type for the data structure
+ * @param persistanceKey: if passed state will store in localStorage under that key and loaded as initial state
+ */
+
 export const createRefContextStore = <Store,>(
   initialState: Store,
   persistanceKey?: string
@@ -65,6 +75,7 @@ export const createRefContextStore = <Store,>(
     );
   };
 
+  //React >= 18
   const useStore = <SelectorOutput,>(
     selector: (store: Store) => SelectorOutput
   ): [SelectorOutput, (value: Partial<Store>) => void] => {
@@ -78,6 +89,24 @@ export const createRefContextStore = <Store,>(
     );
     return [state, store.set];
   };
+
+  //React < 18
+  //   const useStore = <SelectorOutput,>(
+  //     selector: (store: Store) => SelectorOutput
+  //   ): [SelectorOutput, (value: Partial<Store>) => void] => {
+  //     const store = useContext(StoreContext);
+  //     if (!store) {
+  //       throw new Error("store not found");
+  //     }
+
+  //     const [state, setState] = useState(selector(store.get()));
+
+  //     useEffect(() => {
+  //       return store.subscribe(() => setState(selector(store.get())));
+  //     }, [store, selector]);
+
+  //     return [state, store.set];
+  //   };
 
   return { Provider, useStore };
 };

@@ -1,6 +1,9 @@
 import { useThemeStore } from "../stores/themeStore";
 
-// Middleware hook to handle toggle theme state
+/**
+ * Middleware hook to handle toggle theme state
+ */
+
 export const useToggleTheme = () => {
   const { data, set } = useThemeStore();
 

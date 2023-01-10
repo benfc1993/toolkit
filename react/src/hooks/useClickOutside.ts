@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from "react";
 
-//Will fire callback function when element with passed ref is click outside of
+/**
+ * Will fire callback function when a click event is received
+ * on any component outside of the elRef's decendants
+ */
+
 export const useClickOutside = (
   elRef: React.RefObject<HTMLDivElement>,
   callback: (e: MouseEvent) => void
