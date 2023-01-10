@@ -1,0 +1,12 @@
+@import "../../../theme.scss";
+
+.section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @include themed() {
+    color: t("text");
+    background: t("bg");
+  }
+}

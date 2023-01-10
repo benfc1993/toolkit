@@ -1,0 +1,77 @@
+$brand--primary--light: #b45139;
+$brand--primary--dark: lighten($brand--primary--light, 10%);
+$brand--secondary--light: $brand--primary--light;
+$brand--secondary--dark: $brand--primary--dark;
+//$brand--secondary--light: #4376A3;
+//$brand--secondary--dark: lighten($brand--secondary--light, 18%);
+$bg--red: lighten($brand--primary--light, 40%);
+$bg--blue: lighten($brand--secondary--light, 40%);
+$bg--light: #f5f4f3;
+$bg--dark--top: #333848;
+$bg--dark--top: #272b38;
+$bg--dark--bottom: #212631;
+$bg--dark: linear-gradient(180deg, $bg--dark--top 0%, $bg--dark--bottom 100%);
+$bg--card--light: lighten($bg--light, 1%);
+$bg--card--dark: desaturate(lighten($bg--dark--top, 5%), 5%);
+$card-border--light: 0px solid transparent;
+$card-border--dark: 1px solid lighten($bg--card--dark, 12%);
+$text--imp--light: #242d30;
+$text--imp--dark: #e8e4e0;
+$text--light: lighten($text--imp--light, 12%);
+$text--dark: #cac3bc;
+$text--2--light: $text--imp--light;
+$text--2--dark: $text--imp--dark;
+$text--3--light: lighten($text--light, 20%);
+$text--3--dark: darken($text--dark, 20%);
+$border--light: darken($bg--card--light, 10%);
+$border--dark: lighten($bg--card--dark, 10%);
+$hover--light: transparentize($brand--secondary--light, 0.9);
+$hover--dark: transparentize(#fff, 0.9);
+
+$highlight-color: transparentize($brand--secondary--light, 0.1);
+
+$themes: (
+  default: (
+    logo: url("../images/brand/logo_vertical.svg"),
+    bg: $bg--light,
+    card-bg: $bg--card--light,
+    text: $text--light,
+    text-secondary: $text--2--light,
+    link: $brand--primary--light,
+    hover: $hover--light,
+    border: $border--light,
+  ),
+  dark: (
+    logo: url("../images/brand/logo_vertical--invert.svg"),
+    bg: linear-gradient($bg--dark--top, $bg--dark--bottom),
+    card-bg: $bg--card--dark,
+    text: $text--dark,
+    text-secondary: $text--2--dark,
+    link: $brand--primary--dark,
+    hover: $hover--dark,
+    border: $border--dark,
+  ),
+);
+
+@mixin themed() {
+  @each $theme, $map in $themes {
+    .theme--#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function t($key) {
+  @return map-get($theme-map, $key);
+}
