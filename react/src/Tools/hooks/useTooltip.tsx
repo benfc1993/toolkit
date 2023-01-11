@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { setPartialState } from "../Utils/setPartialState";
 
+interface Position {
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
+}
+
 interface TooltipState {
   text: string;
   show: boolean;
-  position: {
-    top: string;
-    right: string;
-    bottom: string;
-    left: string;
-  };
+  position: Position;
 }
 
 export const useHoverTooltip = (tooltipText: string) => {
@@ -23,64 +25,68 @@ export const useHoverTooltip = (tooltipText: string) => {
       left: "",
     },
   });
-  const ref = useRef<HTMLDivElement>(null);
+  const elRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const blockMouseOutRef = useRef(false);
 
-  const handleMouseOver = useCallback((event: MouseEvent) => {
+  const handleMouseOver = useCallback(() => {
+    console.log("mouse over");
     setPartialState(setTooltipState, { show: true });
   }, []);
 
   const handleMouseOut = useCallback(() => {
+    if (!blockMouseOutRef.current)
+      setPartialState(setTooltipState, { show: false });
+  }, []);
+
+  const handleBlockMouseOut = useCallback(() => {
+    blockMouseOutRef.current = true;
+  }, []);
+
+  const handleFreeMouseOut = useCallback(() => {
+    blockMouseOutRef.current = false;
     setPartialState(setTooltipState, { show: false });
   }, []);
 
   useEffect(() => {
-    const current = ref.current;
-    if (current) {
-      current.addEventListener("mouseenter", handleMouseOver);
-      current.addEventListener("mouseleave", handleMouseOut);
-
-      return () => {
-        current.removeEventListener("mouseenter", handleMouseOver);
-        current.removeEventListener("mouseleave", handleMouseOut);
-      };
+    const elCurrent = elRef.current;
+    if (elCurrent) {
+      elCurrent.addEventListener("mouseenter", handleMouseOver);
+      elCurrent.addEventListener("mouseleave", handleMouseOut);
     }
+
+    return () => {
+      if (elCurrent) {
+        elCurrent.removeEventListener("mouseenter", handleMouseOver);
+        elCurrent.removeEventListener("mouseleave", handleMouseOut);
+      }
+    };
   }, [handleMouseOver, handleMouseOut]);
 
   useEffect(() => {
-    const tooltipElement = ref.current?.querySelector(
-      ".tooltip"
-    ) as HTMLElement;
+    const tooltipElement = tooltipRef.current as HTMLElement;
     if (!tooltipElement) return;
-    const rect = ref.current?.getBoundingClientRect();
+    const rect = elRef.current?.getBoundingClientRect();
     const tooltipRect = tooltipElement.getBoundingClientRect();
 
-    console.log("hello");
-
     if (rect) {
-      const left = rect.x - (tooltipRect.width / 2 + rect.width);
-      const right = window.innerWidth - rect.x - tooltipRect.width;
-      const top = rect.y - tooltipRect.height;
-      const bottom = window.innerHeight - rect.y;
+      const left = findLeftEdge(rect, tooltipRect);
+      const right = findRightEdge(rect, tooltipRect);
+      const top = findTopEdge(rect, tooltipRect);
+      const bottom = findBottomEdge(rect, tooltipRect);
 
-      console.log({ left });
-
-      const position = {
-        top: "",
-        right: "",
-        bottom: "",
-        left: "",
-        transform: "",
-      };
+      const position: Position = { top: "", left: "", right: "", bottom: "" };
 
       const buffer = 5;
-      const rectIsOutOfBoundsX = left < 0 || right < 0;
-      const rectIsOutOfBoundsY = top < 0 || bottom < 0;
+      const rectIsOutOfBoundsX =
+        left < 0 || right + buffer >= window.innerWidth;
+      const rectIsOutOfBoundsY = top < 0 || bottom > window.innerHeight;
 
       if (rectIsOutOfBoundsX) {
         if (left < 0) position.left = `${buffer}px`;
-        if (right < 0) position.right = `${buffer}px`;
+        if (right + buffer >= window.innerWidth) position.right = `${buffer}px`;
       } else {
-        position.left = `${rect.x - rect.width}px`;
+        position.left = `${rect.x + rect.width / 2 - tooltipRect.width / 2}px`;
       }
       if (rectIsOutOfBoundsY) {
         if (top < 0) position.top = `${buffer}px`;
@@ -89,18 +95,18 @@ export const useHoverTooltip = (tooltipText: string) => {
         position.top = `${rect.y - tooltipRect.height - 5}px`;
       }
 
-      console.log({ position });
-
       setPartialState(setTooltipState, { position });
     }
-  }, [tooltipState.show, ref.current]);
+  }, [tooltipState.show]);
 
   const Tooltip = () => {
     return tooltipState.show ? (
       <div
+        ref={tooltipRef}
         className="tooltip"
-        style={{ ...tooltipState.position }}
-        onMouseEnter={(e) => e.stopPropagation()}
+        style={{ ...tooltipState.position, width: "200px" }}
+        onMouseEnter={handleBlockMouseOut}
+        onMouseLeave={handleFreeMouseOut}
       >
         {tooltipState.text}
       </div>
@@ -110,7 +116,31 @@ export const useHoverTooltip = (tooltipText: string) => {
   };
 
   return {
-    ref,
+    ref: elRef,
     Tooltip,
   };
+};
+
+const findTopEdge = (elRect: DOMRect, tooltipRect: DOMRect): number => {
+  const topEdge = elRect.y - (tooltipRect.height + elRect.height + 15);
+  return topEdge;
+};
+
+const findBottomEdge = (elRect: DOMRect, tooltipRect: DOMRect): number => {
+  const bottomEdge = elRect.y + tooltipRect.height + elRect.height + 15;
+
+  return bottomEdge;
+};
+
+const findRightEdge = (elRect: DOMRect, tooltipRect: DOMRect): number => {
+  const rightEdge =
+    elRect.x + elRect.width / 2 + (tooltipRect.width / 2 - elRect.width / 2);
+
+  return rightEdge;
+};
+
+const findLeftEdge = (elRect: DOMRect, tooltipRect: DOMRect): number => {
+  const leftEdge = elRect.x - (tooltipRect.width / 2 - elRect.width / 2);
+
+  return leftEdge;
 };

@@ -10,7 +10,7 @@ function App() {
   return (
     <div className={`App theme--${data.theme}`}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(20, 1fr" }}>
-        {Array.from({ length: 100 }).map((_, idx) => {
+        {Array.from({ length: 200 }).map((_, idx) => {
           return <Tooltip key={idx} />;
         })}
       </div>
@@ -28,9 +28,9 @@ function Tooltip() {
   );
 
   return (
-    <div ref={ref}>
-      Hello
+    <>
+      <div ref={ref}>Hello</div>
       <Tooltip />
-    </div>
+    </>
   );
 }
