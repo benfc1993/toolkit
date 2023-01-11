@@ -1,11 +1,10 @@
-import {
-  createContextStore,
-  useStore,
-} from "../Examples/stores/Context/store/createContextStore";
+import { createContextStore } from "../Tools/stores/Context/store/createContextStore";
+
+type ThemeStoreType = {
+  theme: "dark" | "default";
+};
 
 export const {
   ContextStoreProvider: ThemeStoreProvider,
   useContextStore: useThemeStore,
-} = createContextStore(() =>
-  useStore<{ theme: "dark" | "default" }>({ theme: "dark" }, "theme")
-);
+} = createContextStore<ThemeStoreType>({ theme: "dark" }, "theme");

@@ -4,7 +4,7 @@ import { router } from "../../Router";
 import { reduceRoutes, Route } from "./reduceRoutesToObject";
 import styles from "./NavBar.module.scss";
 import { useThemeStore } from "../../stores/themeStore";
-import { useToggleTheme } from "../../hooks/useToggleTheme";
+import { useToggleTheme } from "../../Tools/hooks/useToggleTheme";
 
 export const NavBar: React.FC = () => {
   const [routes, setRoutes] = useState<Route[]>([]);

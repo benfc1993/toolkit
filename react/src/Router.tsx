@@ -1,8 +1,8 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { NavBar } from "./Components/NavBar/NavBar";
 import { Page } from "./Components/Page";
-import { ContextExample } from "./Examples/stores/Context";
-import { RefContextExample } from "./Examples/stores/RefContext";
+import { ContextExample } from "./Tools/stores/Context";
+import { RefContextExample } from "./Tools/stores/RefContext";
 
 export const router = createBrowserRouter([
   {
