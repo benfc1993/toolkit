@@ -27,25 +27,24 @@ export const useHoverTooltip = (tooltipText: string) => {
   });
   const elRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const blockMouseOutRef = useRef(false);
 
+  const showTooltip = () => {
+    const position = calculateTooltipPosition(
+      elRef.current as HTMLElement,
+      tooltipRef.current as HTMLElement
+    );
+    setPartialState(setTooltipState, { show: true, position });
+  };
+
+  const hideTooltip = () => {
+    setPartialState(setTooltipState, { show: false });
+  };
   const handleMouseOver = useCallback(() => {
-    console.log("mouse over");
-    setPartialState(setTooltipState, { show: true });
+    showTooltip();
   }, []);
 
   const handleMouseOut = useCallback(() => {
-    if (!blockMouseOutRef.current)
-      setPartialState(setTooltipState, { show: false });
-  }, []);
-
-  const handleBlockMouseOut = useCallback(() => {
-    blockMouseOutRef.current = true;
-  }, []);
-
-  const handleFreeMouseOut = useCallback(() => {
-    blockMouseOutRef.current = false;
-    setPartialState(setTooltipState, { show: false });
+    hideTooltip();
   }, []);
 
   useEffect(() => {
@@ -63,71 +62,69 @@ export const useHoverTooltip = (tooltipText: string) => {
     };
   }, [handleMouseOver, handleMouseOut]);
 
-  useEffect(() => {
-    const tooltipElement = tooltipRef.current as HTMLElement;
-    if (!tooltipElement) return;
-    const rect = elRef.current?.getBoundingClientRect();
-    const tooltipRect = tooltipElement.getBoundingClientRect();
-
-    if (rect) {
-      const left = findLeftEdge(rect, tooltipRect);
-      const right = findRightEdge(rect, tooltipRect);
-      const top = findTopEdge(rect, tooltipRect);
-      const bottom = findBottomEdge(rect, tooltipRect);
-
-      const position: Position = { top: "", left: "", right: "", bottom: "" };
-
-      const buffer = 5;
-      const rectIsOutOfBoundsX =
-        left < 0 || right + buffer >= window.innerWidth;
-      const rectIsOutOfBoundsY = top < 0 || bottom > window.innerHeight;
-
-      if (rectIsOutOfBoundsX) {
-        if (left < 0) position.left = `${buffer}px`;
-        if (right + buffer >= window.innerWidth) position.right = `${buffer}px`;
-      } else {
-        position.left = `${rect.x + rect.width / 2 - tooltipRect.width / 2}px`;
-      }
-      if (rectIsOutOfBoundsY) {
-        if (top < 0) position.top = `${buffer}px`;
-        if (bottom < 0) position.bottom = `${buffer}px`;
-      } else {
-        position.top = `${rect.y - tooltipRect.height - 5}px`;
-      }
-
-      setPartialState(setTooltipState, { position });
-    }
-  }, [tooltipState.show]);
-
-  const Tooltip = () => {
-    return tooltipState.show ? (
+  const Tooltip: React.FC<{ children?: React.ReactNode }> = (props) => {
+    const { children } = props;
+    return (
       <div
         ref={tooltipRef}
-        className="tooltip"
+        className={`tooltip ${tooltipState.show ? "show" : ""}`}
         style={{ ...tooltipState.position, width: "200px" }}
-        onMouseEnter={handleBlockMouseOut}
-        onMouseLeave={handleFreeMouseOut}
       >
-        {tooltipState.text}
+        {children ? children : tooltipState.text}
       </div>
-    ) : (
-      <></>
     );
   };
 
   return {
     ref: elRef,
+    showTooltip,
+    hideTooltip,
     Tooltip,
   };
 };
 
+const calculateTooltipPosition = (
+  element: HTMLElement,
+  tooltipElement: HTMLElement
+): Position => {
+  const position: Position = { top: "", left: "", right: "", bottom: "" };
+  if (!tooltipElement || !element) return position;
+
+  const rect = element.getBoundingClientRect();
+  const tooltipRect = tooltipElement.getBoundingClientRect();
+
+  const left = findLeftEdge(rect, tooltipRect);
+  const right = findRightEdge(rect, tooltipRect);
+  const top = findTopEdge(rect, tooltipRect);
+  const bottom = findBottomEdge(rect, tooltipRect);
+
+  const buffer = 5;
+  const rectIsOutOfBoundsX = left < 0 || right + buffer >= window.innerWidth;
+  const rectIsOutOfBoundsY = top < 0 || bottom > window.innerHeight;
+
+  if (rectIsOutOfBoundsX) {
+    if (left < 0) position.left = `${buffer}px`;
+    if (right + buffer >= window.innerWidth) position.right = `${buffer}px`;
+  } else {
+    position.left = `${rect.x + rect.width / 2 - tooltipRect.width / 2}px`;
+  }
+  if (rectIsOutOfBoundsY) {
+    if (top < 0) position.top = `${rect.y + rect.height + buffer}px`;
+    if (bottom < 0) position.bottom = `${rect.y - rect.height - buffer}px`;
+  } else {
+    position.top = `${rect.y - tooltipRect.height - 5}px`;
+  }
+
+  return position;
+};
+
 const findTopEdge = (elRect: DOMRect, tooltipRect: DOMRect): number => {
-  const topEdge = elRect.y - (tooltipRect.height + elRect.height + 15);
+  const topEdge = elRect.y - (tooltipRect.height + elRect.height);
   return topEdge;
 };
 
 const findBottomEdge = (elRect: DOMRect, tooltipRect: DOMRect): number => {
-  const bottomEdge = elRect.y + tooltipRect.height + elRect.height + 15;
+  const bottomEdge = elRect.y + tooltipRect.height + elRect.height;
 
   return bottomEdge;
 };

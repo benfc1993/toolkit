@@ -10,11 +10,9 @@ interface PageProps {
 export const Page: React.FC<PageProps> = (props) => {
   const { pageName, children } = props;
 
-  const { ref, Tooltip } = useHoverTooltip("Page Title");
   return (
     <div className={styles.page}>
-      <h1 ref={ref}>{pageName}</h1>
-      <Tooltip />
+      <h1>{pageName}</h1>
       {children}
     </div>
   );

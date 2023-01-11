@@ -3,6 +3,7 @@ import { NavBar } from "./Components/NavBar/NavBar";
 import { Page } from "./Components/Page";
 import { ContextExample } from "./Tools/stores/Context";
 import { RefContextExample } from "./Tools/stores/RefContext";
+import { TooltipExample } from "./Tools/Examples/TooltipExample";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,19 @@ export const router = createBrowserRouter([
             element: (
               <Page pageName="Ref Context Example">
                 <RefContextExample />
+              </Page>
+            ),
+          },
+        ],
+      },
+      {
+        path: "/hooks",
+        children: [
+          {
+            path: "/hooks/tooltip",
+            element: (
+              <Page pageName="Tooltip">
+                <TooltipExample />
               </Page>
             ),
           },
