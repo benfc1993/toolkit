@@ -5,7 +5,7 @@ export const TooltipExample = () => {
     <div style={{ display: "grid", gridTemplateColumns: "repeat(20, 1fr" }}>
       {Array.from({ length: 20 }).map((_, idx) => {
         const bottom = Math.random() * window.innerHeight;
-        const left = Math.random() * (window.innerWidth - 200) + 200;
+        const left = Math.random() * window.innerWidth;
         return <TooltipElement bottom={bottom} left={left} />;
       })}
     </div>
@@ -13,7 +13,8 @@ export const TooltipExample = () => {
 };
 const TooltipElement: React.FC<{ bottom: number; left: number }> = (props) => {
   const { ref, showTooltip, hideTooltip, Tooltip } = useHoverTooltip(
-    "Hello This is a really big Message"
+    "Hello This is a really big Message",
+    "right"
   );
   return (
     <>
