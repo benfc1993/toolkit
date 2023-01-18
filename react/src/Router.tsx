@@ -3,6 +3,8 @@ import { NavBar } from "./Components/NavBar/NavBar";
 import { Page } from "./Components/Page";
 import { ContextExample } from "./Examples/stores/Context";
 import { RefContextExample } from "./Examples/stores/RefContext";
+import { UseAsync } from "./Examples/Hooks/UseAsync";
+import { UseStorage } from "./Examples/Hooks/UseStorage";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,27 @@ export const router = createBrowserRouter([
             element: (
               <Page pageName="Ref Context Example">
                 <RefContextExample />
+              </Page>
+            ),
+          },
+        ],
+      },
+      {
+        path: "/hooks",
+        children: [
+          {
+            path: "/hooks/useAsync",
+            element: (
+              <Page pageName="useAsync">
+                <UseAsync />
+              </Page>
+            ),
+          },
+          {
+            path: "/hooks/useStorage",
+            element: (
+              <Page pageName="useStorage">
+                <UseStorage />
               </Page>
             ),
           },
