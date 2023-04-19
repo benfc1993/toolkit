@@ -1,0 +1,34 @@
+#! /bin/bash
+
+function usage {
+    echo ""
+    echo "Toolkit search"
+    echo ""
+    echo "By default the tool will copy the contents of the selected file to your clipboard"
+    echo ""
+    echo "usage: toolkit"
+    echo ""
+    echo "Options"
+    echo "  --edit                  will open the file in vscode to edit"
+    echo "  -e"
+    echo ""
+}
+
+while [ $# -gt 0 ]; do
+    if [[ $1 == "-h" || $1 == "--help" ]]; then
+      usage;
+      exit 0
+    fi
+
+    if [[ $1 == "-e" || $1 == "--edit" ]]; then
+      shift
+      cd $TOOLKIT_PATH
+      fzf | xargs -r  /usr/local/bin/code $1
+      exit 0
+    fi
+done
+
+cd $TOOLKIT_PATH
+fzf | xargs -r cat $1 | pbcopy``
+echo "Copied to your clipboard." 
+exit 0
