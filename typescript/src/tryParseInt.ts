@@ -1,4 +1,8 @@
 export const tryParseInt = (str: string, fallback: number) => {
-  const parsed = parseInt(str);
-  return isNaN(parsed) ? fallback : parsed;
-};
+  if (!str.match(/^[0-9]*$/)) return fallback
+
+  const parsed = parseInt(str)
+
+  const validParse = !isNaN(parsed)
+  return validParse ? parsed : fallback
+}

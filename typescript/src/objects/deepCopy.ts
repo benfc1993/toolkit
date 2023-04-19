@@ -1,4 +1,4 @@
-const deepCopy = <T extends object>(obj: T): T => {
+export const deepCopy = <T extends object>(obj: T): T => {
   let entries = Object.entries(obj)
   const copy: T = {} as T
     entries.forEach(([key, value]) => {
