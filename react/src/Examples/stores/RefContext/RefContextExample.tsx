@@ -1,7 +1,7 @@
 import React from "react";
-import { createRefContextStore } from "./store/createRefContextStore";
 import { RenderCounter } from "../../../Components/Utils/RenderCounter/RenderCounter";
 import "./RefContextExampleStyles.scss";
+import { createRefContextStore } from "../../../export/stores/createRefContextStore";
 
 interface ContextStoreState {
   first: string;

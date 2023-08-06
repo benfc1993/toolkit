@@ -1,6 +1,6 @@
 import React from "react";
 import { RenderCounter } from "../../../Components/Utils/RenderCounter/RenderCounter";
-import { createContextStore } from "./store/createContextStore";
+import { createContextStore } from "../../../export/stores/createContextStore";
 import "./ContextExampleStyles.scss";
 
 interface ContextStoreState {

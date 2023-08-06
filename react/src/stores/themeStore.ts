@@ -1,4 +1,4 @@
-import { createContextStore } from "../Examples/stores/Context/store/createContextStore";
+import { createContextStore } from "../export/stores/createContextStore";
 
 export const {
   ContextStoreProvider: ThemeStoreProvider,
