@@ -29,6 +29,6 @@ while [ $# -gt 0 ]; do
 done
 
 cd $TOOLKIT_PATH
-fzf | xargs -r cat $1 | pbcopy``
-echo "Copied to your clipboard." 
+testing=$(fzf)
+cat $testing | pbcopy
 exit 0
