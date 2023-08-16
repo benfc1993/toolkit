@@ -34,9 +34,9 @@ cd $TOOLKIT_PATH
 
 if which tmux >/dev/null;
 then
-  language=$(find -maxdepth 1 -mindepth 1 -name "*" -type d -print | fzf-tmux -p)
+  language=$(find . -maxdepth 1 -mindepth 1 -type d -print | fzf-tmux -p)
 else
-  language=$(find -maxdepth 1 -mindepth 1 -name "*" -type d -print | fzf)
+  language=$(find . -maxdepth 1 -mindepth 1 -type d -print | fzf)
 fi
 
 if [[ -z "$language" ]]; 
@@ -60,9 +60,10 @@ then
 fi
 
 if which pbcopy >/dev/null;
-  then
-   cat $TOOLKIT_PATH/$language/$selected | pbcopy 
-  else
+then
+  cat $TOOLKIT_PATH/$language/$selected | pbcopy 
+  exit 0
+else
   xclip -selection c $TOOLKIT_PATH/$language/$selected 
+  exit 0 
 fi
-exit 0
