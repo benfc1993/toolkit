@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/zsh
 
 function usage {
     echo ""
@@ -22,18 +22,47 @@ while [ $# -gt 0 ]; do
 
     if [[ $1 == "-e" || $1 == "--edit" ]]; then
       shift
-      cd $TOOLKIT_PATH
+      cd '"$TOOLKIT_PATH"'
       fzf | xargs -r  /usr/local/bin/code $1
       exit 0
     fi
 done
 
+source ~/.zshrc
+
 cd $TOOLKIT_PATH
-testing=$(fzf)
+
+if which tmux >/dev/null;
+then
+  language=$(find -maxdepth 1 -mindepth 1 -name "*" -type d -print | fzf-tmux -p)
+else
+  language=$(find -maxdepth 1 -mindepth 1 -name "*" -type d -print | fzf)
+fi
+
+if [[ -z "$language" ]]; 
+then 
+  exit 0
+fi
+
+cd $language
+
+
+if which tmux >/dev/null;
+then
+  selected=$(find * -type f -name '*' | fzf-tmux -p)
+else
+  selected=$(find * -type f -name '*' | fzf)
+fi
+
+if [[ -z "$selected" ]]; 
+then 
+  exit 0
+fi
+
 if which pbcopy >/dev/null;
   then
-   cat $testing | pbcopy 
+   cat $TOOLKIT_PATH/$language/$selected | pbcopy 
   else
-    xclip -selection c $testing 
+  xclip -selection c $TOOLKIT_PATH/$language/$selected 
 fi
-    exit 0
+exit 0
