@@ -67,3 +67,5 @@ else
   xclip -selection c $TOOLKIT_PATH/$language/$selected 
   exit 0 
 fi
+
+exit 0
