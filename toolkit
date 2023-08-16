@@ -30,5 +30,10 @@ done
 
 cd $TOOLKIT_PATH
 testing=$(fzf)
-cat $testing | pbcopy
-exit 0
+if which pbcopy >/dev/null;
+  then
+   cat $testing | pbcopy 
+  else
+    xclip -selection c $testing 
+fi
+    exit 0
